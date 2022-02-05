@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'AddImage.dart';
+import 'Test/carousel test.dart';
+import 'add_dif/card_test.dart';
 import 'home.dart';
 import 'Fav.dart';
-import 'add_dif/card_test.dart';
 import 'screens/Home.dart';
 import 'webp.dart';
 
@@ -43,11 +44,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     datafire(),
-    CardTest(),
+    Carrouselllll(),
+    //CardTest(),
     RealTimeDataDisplay(),
     CarouselDemo(),
     //Profile(),
-    webp(),
+    conbb(),
   ];
 
   void _onItemTapped(int index) {

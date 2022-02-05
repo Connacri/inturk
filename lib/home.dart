@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -52,8 +53,8 @@ class _imageURLsState extends State<_imageURLs> {
 
   Future<QuerySnapshot> _TopSponsorFuture = FirebaseFirestore.instance
       .collection('Products')
-      .where('category', isEqualTo: 'Others')
-      .limit(5)
+      .where('category', isEqualTo: 'Autres')
+      .limit(3)
       .get();
 
   /*
@@ -110,67 +111,71 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
             transitionDuration: Duration(seconds: 0)));
   }
 
-  getProducts() async {
+  /* getProducts() async {
     Future<QuerySnapshot> _GridListTotal = FirebaseFirestore.instance
         .collection('Products')
         .orderBy('time', descending: true)
         .limit(6)
         .get();
-  }
+  }*/
 
   Future<QuerySnapshot> _GridListTotal = FirebaseFirestore.instance
       .collection('Products')
-      .orderBy('time', descending: true)
-      .limit(6)
+      .orderBy('createdAt', descending: true)
+      //.limit(100)
       .get();
 
-  List<DocumentSnapshot> products = []; // stores fetched products
-  bool isLoading = false; // track if products fetching
-  bool hasMore = true; // flag for more products available or not
-  int documentLimit = 10; // documents to be fetched per request
-  late DocumentSnapshot lastDocument;
-  ScrollController _scrollController = ScrollController();
+  /* @override
+  void initState() {
+    super.initState();
+    uploadRandom();
+  }*/
 
-  getProductsGlobal() async {
-    if (!hasMore) {
-      print('No More Products');
-      return;
+  void uploadRandom() async {
+    final postCollection =
+        FirebaseFirestore.instance.collection('Products').withConverter<Post>(
+              fromFirestore: (snapshot, _) => Post.fromJson(snapshot.data()!),
+              toFirestore: (post, _) => post.toJson(),
+            );
+    final numbers = List.generate(100, (index) => index + 1);
+    for (final number in numbers) {
+      var prix = Random().nextInt(5000);
+      List<String> listCat = [
+        'Hotel',
+        'Residence',
+        'Agence',
+        'Autres',
+        'Sponsors',
+        'karaté',
+        'ingeniering',
+        'function',
+        'is',
+        'used',
+        'to',
+        'insert',
+        'the',
+        'multiple',
+        'value',
+        'at',
+        'the',
+        'specified',
+        'index',
+        'position',
+      ];
+      var randomItem = (listCat..shuffle()).first;
+      var catego = listCat[0];
+      final post = Post(
+          item: '$catego',
+          code: 'Random Code $number',
+          category: '$catego',
+          price: '$prix',
+          likes: 'Random likes $number', //Random().nextInt(1000),
+          createdAt: DateTime.now(),
+          imageUrl: 'https://source.unsplash.com/random?sig=$number',
+          themb: 'https://source.unsplash.com/random?sig=$number');
+      postCollection.add(post);
     }
-    if (isLoading) {
-      return;
-    }
-    setState(() {
-      isLoading = true;
-    });
-    QuerySnapshot querySnapshot;
-    if (lastDocument == null) {
-      querySnapshot = await FirebaseFirestore.instance
-          .collection('products')
-          .orderBy('name')
-          .limit(documentLimit)
-          .get();
-    } else {
-      querySnapshot = await FirebaseFirestore.instance
-          .collection('products')
-          .orderBy('name')
-          .startAfterDocument(lastDocument)
-          .limit(documentLimit)
-          .get();
-      print(1);
-    }
-    if (querySnapshot.docs.length < documentLimit) {
-      hasMore = false;
-    }
-    lastDocument = querySnapshot.docs[querySnapshot.docs.length - 1];
-    products.addAll(querySnapshot.docs);
-    setState(() {
-      isLoading = false;
-    });
   }
-
-
-  _scrollController
-
 
   @override
   Widget build(BuildContext context) {
@@ -255,6 +260,16 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
                   ],
                 ),
               ), //Firestore Slider
+              Container(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      uploadRandom();
+                    });
+                  },
+                  child: Text('Stepper'),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -644,7 +659,7 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
                                   child: AnimatedTextKit(
                                     repeatForever: true,
                                     animatedTexts: [
-                                      FlickerAnimatedText('Flicker Frenzy',
+                                      FlickerAnimatedText('Flicker Ramzy',
                                           textStyle: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.normal,
@@ -725,7 +740,7 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
 
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Text("KLoading");
+                          return Text("Loading");
                         }
 
                         return ListView(
@@ -856,6 +871,7 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
               SizedBox(
                 child: FutureBuilder<QuerySnapshot>(
                     future: _GridListTotal,
+
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       //print(snapshot.connectionState);
@@ -867,7 +883,6 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
                           return const Text('Error');
                         } else if (snapshot.hasData) {
                           return GridView.count(
-                            controller: _scrollController, //************************controller
                             crossAxisCount: 2,
                             childAspectRatio: 1.0,
                             //mainAxisSpacing: 0.5,
@@ -879,8 +894,8 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
                               Map<String, dynamic> _data =
                                   document.data()! as Map<String, dynamic>;
 
-                              final List<String> images =
-                                  List.from(document['urls']);
+                              /* final List<String> images =
+                              List.from(document['urls']);
 
                               List<GridTile> newGridTile = [];
 
@@ -891,7 +906,7 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
                                     fit: BoxFit.cover,
                                   ),
                                 ));
-                              });
+                              });*/
 
                               return Padding(
                                 padding: const EdgeInsets.fromLTRB(6, 4, 4, 4),
@@ -946,8 +961,8 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
                                         child: CachedNetworkImage(
                                           imageUrl: _data['themb'],
                                           /*placeholder: (context, url) => Center(
-                                              child: CircularProgressIndicator(),
-                                            ),*/
+                                            child: CircularProgressIndicator(),
+                                          ),*/
                                           errorWidget: (context, url, error) =>
                                               Icon(Icons.error),
                                           fit: BoxFit.cover,
@@ -955,9 +970,9 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
                                       ),
 
                                       /*Image.network(
-                                            _data['themb'],
-                                            fit: BoxFit.cover,
-                                          ),*/
+                                          _data['themb'],
+                                          fit: BoxFit.cover,
+                                        ),*/
                                     ),
                                     // focusColor: Colors.deepPurple ,
                                     onTap: () {},
@@ -973,13 +988,56 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
                         return Text('State: ${snapshot.connectionState}');
                       }
                     }),
-              ), // GridView Vertical Global
+              ),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+class Post {
+  final String item;
+  final String category;
+  final String code;
+  final String likes;
+  final String price;
+  final DateTime createdAt;
+  final String imageUrl;
+  final String themb;
+
+  const Post({
+    required this.item,
+    required this.price,
+    required this.category,
+    required this.code,
+    required this.likes,
+    required this.createdAt,
+    required this.imageUrl,
+    required this.themb,
+  });
+  Post.fromJson(Map<String, Object?> json)
+      : this(
+          item: json['item']! as String,
+          code: json['code']! as String,
+          category: json['category']! as String,
+          likes: json['likes']! as String,
+          price: json['price']! as String,
+          createdAt: (json['createdAt']! as Timestamp).toDate(),
+          imageUrl: json['imageUrl']! as String,
+          themb: json['themb']! as String,
+        );
+  Map<String, Object?> toJson() => {
+        'likes': likes,
+        'createdAt': createdAt,
+        'imageUrl': imageUrl,
+        'themb': themb,
+        "item": item,
+        'code': code,
+        'price': price, // + '.00 dzd ',
+        'category': category,
+      };
 }
 
 class CardR extends StatelessWidget {
