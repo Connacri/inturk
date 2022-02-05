@@ -16,7 +16,6 @@ class Carrouselllll extends StatefulWidget {
 }
 
 class _CarrouselllllState extends State<Carrouselllll> {
-
   Future<QuerySnapshot> _TopAgenceFuture = FirebaseFirestore.instance
       .collection('Products')
       .where('category', isEqualTo: 'Agence')
@@ -83,56 +82,52 @@ class _CarrouselllllState extends State<Carrouselllll> {
                         }
                         return snapshot.data == null
                             ? Center(
-                          child: CircularProgressIndicator(),
-                        )
+                                child: CircularProgressIndicator(),
+                              )
                             : Padding(
-                          padding: const EdgeInsets.only(top: 0),
-                          child: CarouselSlider(
-                              items: snapshot.data!.docs.map(
-                                    (DocumentSnapshot document) {
-                                  Map<String, dynamic> _data = document
-                                      .data()! as Map<String, dynamic>;
-                                  return SizedBox(
-                                    width: MediaQuery.of(context)
-                                        .size
-                                        .width,
-                                    child: ShaderMask(
-                                      shaderCallback: (rect) {
-                                        return LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            Colors.transparent,
-                                            Colors.black
-                                          ],
-                                        ).createShader(Rect.fromLTRB(
-                                            0,
-                                            0,
-                                            rect.width,
-                                            rect.height));
+                                padding: const EdgeInsets.only(top: 0),
+                                child: CarouselSlider(
+                                    items: snapshot.data!.docs.map(
+                                      (DocumentSnapshot document) {
+                                        Map<String, dynamic> _data = document
+                                            .data()! as Map<String, dynamic>;
+                                        return SizedBox(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: ShaderMask(
+                                            shaderCallback: (rect) {
+                                              return LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Colors.transparent,
+                                                  Colors.black
+                                                ],
+                                              ).createShader(Rect.fromLTRB(0, 0,
+                                                  rect.width, rect.height));
+                                            },
+                                            blendMode: BlendMode.darken,
+                                            child: CachedNetworkImage(
+                                              fit: BoxFit.cover,
+                                              imageUrl: _data['themb'],
+                                            ),
+                                          ),
+                                        );
                                       },
-                                      blendMode: BlendMode.darken,
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.cover,
-                                        imageUrl: _data['themb'],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ).toList(),
-                              options: CarouselOptions(
-                                viewportFraction: 1,
-                                initialPage: 0,
-                                autoPlay: true,
-                                height: 170,
-                                /*   onPageChanged: (int i,
+                                    ).toList(),
+                                    options: CarouselOptions(
+                                      viewportFraction: 1,
+                                      initialPage: 0,
+                                      autoPlay: true,
+                                      height: 170,
+                                      /*   onPageChanged: (int i,
                                         carouselPageChangedReason) {
                                       setState(() {
                                         _index = i;
                                       });
                                     }*/
-                              )),
-                        );
+                                    )),
+                              );
                       },
                     ),
                 ],
@@ -225,7 +220,7 @@ class _CarrouselllllState extends State<Carrouselllll> {
                           children: snapshot.data!.docs
                               .map((DocumentSnapshot document) {
                             Map<String, dynamic> _data =
-                            document.data()! as Map<String, dynamic>;
+                                document.data()! as Map<String, dynamic>;
                             return CardR(data: _data);
                           }).toList(),
                         );
@@ -312,7 +307,7 @@ class _CarrouselllllState extends State<Carrouselllll> {
                           children: snapshot.data!.docs
                               .map((DocumentSnapshot document) {
                             Map<String, dynamic> _data =
-                            document.data()! as Map<String, dynamic>;
+                                document.data()! as Map<String, dynamic>;
                             return Card(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(6),
@@ -323,9 +318,8 @@ class _CarrouselllllState extends State<Carrouselllll> {
                               color: Colors.white70,
                               child: Container(
                                 height:
-                                MediaQuery.of(context).size.width * 0.15,
-                                width:
-                                MediaQuery.of(context).size.width * 0.30,
+                                    MediaQuery.of(context).size.width * 0.15,
+                                width: MediaQuery.of(context).size.width * 0.30,
                                 child: Stack(
                                   fit: StackFit.expand,
                                   children: [
@@ -349,8 +343,7 @@ class _CarrouselllllState extends State<Carrouselllll> {
                                           /*placeholder: (context, url) => Center(
                                               child: CircularProgressIndicator(),
                                             ),*/
-                                          errorWidget:
-                                              (context, url, error) =>
+                                          errorWidget: (context, url, error) =>
                                               Icon(Icons.error),
                                         ),
                                       ),
@@ -485,7 +478,7 @@ class _CarrouselllllState extends State<Carrouselllll> {
                           children: snapshot.data!.docs
                               .map((DocumentSnapshot document) {
                             Map<String, dynamic> _data =
-                            document.data()! as Map<String, dynamic>;
+                                document.data()! as Map<String, dynamic>;
                             return CardR(data: _data);
                           }).toList(),
                         );
@@ -512,74 +505,80 @@ class _CarrouselllllState extends State<Carrouselllll> {
               child: PaginateFirestore(
                 //reverse: true,
                 itemsPerPage: 10,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilderType: PaginateBuilderType.gridView,
-                    //isLive: true,
-                    query: FirebaseFirestore.instance
-                        .collection('Products')
-                        .orderBy('createdAt', descending: true),
-                    itemBuilder: (context, documentSnapshots, index) {
-                      final _data = documentSnapshots[index].data() as Map?;
-                      return _data == null ? const Text('Error in data') : Padding(
-                        padding: const EdgeInsets.fromLTRB(6, 4, 4, 4),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 5,
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: InkWell(
-                            child: GridTile(
-                              footer: Container(
-                                child: ListTile(
-                                  title: Text(
-                                    _data['item'].toUpperCase(),
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 15,
-                                      fontFamily: 'Oswald',
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    _data['price'] + '.00 DZD',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Colors.indigoAccent,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 17,
-                                      fontFamily: 'Oswald',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              child: ShaderMask(
-                                shaderCallback: (rect) {
-                                  return LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [Colors.transparent, Colors.black],
-                                  ).createShader(
-                                      Rect.fromLTRB(0, 0, rect.width, rect.height));
-                                },
-                                blendMode: BlendMode.darken,
-                                child: CachedNetworkImage(
-                                  imageUrl: _data['themb'],
-                                  errorWidget: (context, url, error) => Icon(Icons.error),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilderType: PaginateBuilderType.gridView,
+                isLive: true,
+                query: FirebaseFirestore.instance
+                    .collection('Products')
+                    //.limit(10)
+                    .orderBy('createdAt', descending: true),
+                itemBuilder: (context, documentSnapshots, index) {
+                  final _data = documentSnapshots[index].data() as Map?;
+                  return _data == null
+                      ? const Text('Error in data')
+                      : Padding(
+                          padding: const EdgeInsets.fromLTRB(6, 4, 4, 4),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            onTap: () {},
+                            elevation: 5,
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            child: InkWell(
+                              child: GridTile(
+                                footer: Container(
+                                  child: ListTile(
+                                    title: Text(
+                                      _data['item'].toUpperCase(),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 15,
+                                        fontFamily: 'Oswald',
+                                      ),
+                                    ),
+                                    subtitle: Text(
+                                      _data['price'] + '.00 DZD',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.indigoAccent,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                        fontFamily: 'Oswald',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                child: ShaderMask(
+                                  shaderCallback: (rect) {
+                                    return LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.black
+                                      ],
+                                    ).createShader(Rect.fromLTRB(
+                                        0, 0, rect.width, rect.height));
+                                  },
+                                  blendMode: BlendMode.darken,
+                                  child: CachedNetworkImage(
+                                    imageUrl: _data['themb'],
+                                    errorWidget: (context, url, error) =>
+                                        Icon(Icons.error),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              onTap: () {},
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
+                        );
+                },
+              ),
             ),
-
 
             // Container(
             //   // height: 250,
@@ -882,6 +881,7 @@ class _CarrouselllllState extends State<Carrouselllll> {
       ),
     );
   }
+
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
       getSliderImageFromDb() async {
     final QuerySnapshot<Map<String, dynamic>> _sliderShot =
@@ -900,10 +900,10 @@ class _CarrouselllllState extends State<Carrouselllll> {
 
   void uploadRandom() async {
     final postCollection =
-    FirebaseFirestore.instance.collection('Products').withConverter<Post>(
-      fromFirestore: (snapshot, _) => Post.fromJson(snapshot.data()!),
-      toFirestore: (post, _) => post.toJson(),
-    );
+        FirebaseFirestore.instance.collection('Products').withConverter<Post>(
+              fromFirestore: (snapshot, _) => Post.fromJson(snapshot.data()!),
+              toFirestore: (post, _) => post.toJson(),
+            );
     final numbers = List.generate(100, (index) => index + 1);
     for (final number in numbers) {
       var prix = Random().nextInt(5000);
