@@ -500,85 +500,86 @@ class _CarrouselllllState extends State<Carrouselllll> {
                   ),
                 ],
               ),
-            ), // ListView Horizontal Filtered Top Agence
-            SizedBox(
-              child: PaginateFirestore(
-                //reverse: true,
-                itemsPerPage: 10,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilderType: PaginateBuilderType.gridView,
-                isLive: true,
-                query: FirebaseFirestore.instance
-                    .collection('Products')
-                    //.limit(10)
-                    .orderBy('createdAt', descending: true),
-                itemBuilder: (context, documentSnapshots, index) {
-                  final _data = documentSnapshots[index].data() as Map?;
-                  return _data == null
-                      ? const Text('Error in data')
-                      : Padding(
-                          padding: const EdgeInsets.fromLTRB(6, 4, 4, 4),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 5,
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            child: InkWell(
-                              child: GridTile(
-                                footer: Container(
-                                  child: ListTile(
-                                    title: Text(
-                                      _data['item'].toUpperCase(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 15,
-                                        fontFamily: 'Oswald',
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      _data['price'] + '.00 DZD',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Colors.indigoAccent,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17,
-                                        fontFamily: 'Oswald',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                child: ShaderMask(
-                                  shaderCallback: (rect) {
-                                    return LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.transparent,
-                                        Colors.black
-                                      ],
-                                    ).createShader(Rect.fromLTRB(
-                                        0, 0, rect.width, rect.height));
-                                  },
-                                  blendMode: BlendMode.darken,
-                                  child: CachedNetworkImage(
-                                    imageUrl: _data['themb'],
-                                    errorWidget: (context, url, error) =>
-                                        Icon(Icons.error),
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                              onTap: () {},
-                            ),
-                          ),
-                        );
-                },
-              ),
             ),
+            // ListView Horizontal Filtered Top Agence
+            // SizedBox(
+            //   child: PaginateFirestore(
+            //     //reverse: true,
+            //     itemsPerPage: 10,
+            //     shrinkWrap: true,
+            //     physics: NeverScrollableScrollPhysics(),
+            //     itemBuilderType: PaginateBuilderType.gridView,
+            //     isLive: true,
+            //     query: FirebaseFirestore.instance
+            //         .collection('Products')
+            //         //.limit(10)
+            //         .orderBy('createdAt', descending: true),
+            //     itemBuilder: (context, documentSnapshots, index) {
+            //       final _data = documentSnapshots[index].data() as Map?;
+            //       return _data == null
+            //           ? const Text('Error in data')
+            //           : Padding(
+            //               padding: const EdgeInsets.fromLTRB(6, 4, 4, 4),
+            //               child: Card(
+            //                 shape: RoundedRectangleBorder(
+            //                   borderRadius: BorderRadius.circular(12),
+            //                 ),
+            //                 elevation: 5,
+            //                 clipBehavior: Clip.antiAliasWithSaveLayer,
+            //                 child: InkWell(
+            //                   child: GridTile(
+            //                     footer: Container(
+            //                       child: ListTile(
+            //                         title: Text(
+            //                           _data['item'].toUpperCase(),
+            //                           overflow: TextOverflow.ellipsis,
+            //                           style: TextStyle(
+            //                             color: Colors.white,
+            //                             fontWeight: FontWeight.normal,
+            //                             fontSize: 15,
+            //                             fontFamily: 'Oswald',
+            //                           ),
+            //                         ),
+            //                         subtitle: Text(
+            //                           _data['price'] + '.00 DZD',
+            //                           overflow: TextOverflow.ellipsis,
+            //                           style: TextStyle(
+            //                             color: Colors.indigoAccent,
+            //                             fontWeight: FontWeight.bold,
+            //                             fontSize: 17,
+            //                             fontFamily: 'Oswald',
+            //                           ),
+            //                         ),
+            //                       ),
+            //                     ),
+            //                     child: ShaderMask(
+            //                       shaderCallback: (rect) {
+            //                         return LinearGradient(
+            //                           begin: Alignment.topCenter,
+            //                           end: Alignment.bottomCenter,
+            //                           colors: [
+            //                             Colors.transparent,
+            //                             Colors.black
+            //                           ],
+            //                         ).createShader(Rect.fromLTRB(
+            //                             0, 0, rect.width, rect.height));
+            //                       },
+            //                       blendMode: BlendMode.darken,
+            //                       child: CachedNetworkImage(
+            //                         imageUrl: _data['themb'],
+            //                         errorWidget: (context, url, error) =>
+            //                             Icon(Icons.error),
+            //                         fit: BoxFit.cover,
+            //                       ),
+            //                     ),
+            //                   ),
+            //                   onTap: () {},
+            //                 ),
+            //               ),
+            //             );
+            //     },
+            //   ),
+            // ),
 
             // Container(
             //   // height: 250,
@@ -876,6 +877,79 @@ class _CarrouselllllState extends State<Carrouselllll> {
             //         }
             //       }),
             // ),
+            PaginateFirestore(
+              itemsPerPage: 15,
+
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilderType: PaginateBuilderType.gridView,
+              //isLive: true,
+              query: FirebaseFirestore.instance
+                  .collection('Products')
+                  .orderBy('createdAt', descending: false),
+              itemBuilder: (context, documentSnapshots, index) {
+                final _data = documentSnapshots[index].data() as Map?;
+                return _data == null
+                    ? const Text('Error in data')
+                    : Padding(
+                  padding: const EdgeInsets.fromLTRB(6, 4, 4, 4),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 5,
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    child: InkWell(
+                      child: GridTile(
+                        footer: Container(
+                          child: ListTile(
+                            title: Text(
+                              _data['item'].toUpperCase(),
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 15,
+                                fontFamily: 'Oswald',
+                              ),
+                            ),
+                            subtitle: Text(
+                              _data['price'] + '.00 DZD',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.indigoAccent,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                fontFamily: 'Oswald',
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: ShaderMask(
+                          shaderCallback: (rect) {
+                            return LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [Colors.transparent, Colors.black],
+                            ).createShader(Rect.fromLTRB(
+                                0, 0, rect.width, rect.height));
+                          },
+                          blendMode: BlendMode.darken,
+                          child: CachedNetworkImage(
+                            imageUrl: _data['themb'],
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      onTap: () {},
+                    ),
+                  ),
+                );
+              },
+            ),
+
           ],
         ),
       ),
