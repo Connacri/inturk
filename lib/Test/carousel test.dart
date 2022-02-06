@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -55,6 +56,8 @@ class _CarrouselllllState extends State<Carrouselllll> {
   int _index = 0;
 
   int _dataLength = 1;
+
+
 //ramzy
   @override
   Widget build(BuildContext context) {
@@ -877,6 +880,7 @@ class _CarrouselllllState extends State<Carrouselllll> {
             //         }
             //       }),
             // ),
+
             PaginateFirestore(
               itemsPerPage: 15,
 
