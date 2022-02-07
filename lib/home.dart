@@ -170,7 +170,7 @@ final Stream<QuerySnapshot> _GridListStream = FirebaseFirestore.instance
           code: 'Random Code $number',
           category: '$catego',
           price: '$prix',
-          likes: 'Random likes $number', //Random().nextInt(1000),
+          likes: '$number', //Random().nextInt(1000),
           createdAt: DateTime.now(),
           imageUrl: 'https://source.unsplash.com/random?sig=$number',
           themb: 'https://source.unsplash.com/random?sig=$number');

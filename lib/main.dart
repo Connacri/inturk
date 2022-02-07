@@ -1,7 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'AddImage.dart';
+import 'Test/Pagination & Infinite Scrolling.dart';
 import 'Test/carousel test.dart';
+import 'Test/firestoreScriptPagination.dart';
+import 'Test/pagination_view.dart';
 import 'add_dif/card_test.dart';
 import 'home.dart';
 import 'Fav.dart';
@@ -43,10 +46,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
+    Pagination_Infinite_Scrolling(),
+    //conbb(),
     datafire(),
-    Carrouselllll(),
-    //CardTest(),
-    RealTimeDataDisplay(),
+    //ScriptPagination(),
+    //RamzyPagination(),
+    //Carrouselllll(),
+    CardTest(),
+    //RealTimeDataDisplay(),
     CarouselDemo(),
     //Profile(),
     conbb(),
