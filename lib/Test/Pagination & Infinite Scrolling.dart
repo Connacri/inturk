@@ -32,20 +32,36 @@ class _Pagination_Infinite_ScrollingState
           centerTitle: true,
         ),
         body: FirestoreQueryBuilder(
-          query: queryPost,
-          pageSize: 20,
-          builder: (BuildContext context,
-              FirestoreQueryBuilderSnapshot<dynamic> snapshot, Widget? child) {
-            return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2),
-                itemCount: snapshot.docs.length,
-                itemBuilder: (context, index) {
-                  final post = snapshot.docs[index].data();
-                  return buildPost(post);
-                });
-          },
-        )
+            query: queryPost,
+            pageSize: 20,
+            builder: (BuildContext context,
+                FirestoreQueryBuilderSnapshot<dynamic> snapshot,
+                Widget? child) {
+              if (snapshot.isFetching) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return Text('Somethink as wrong! ${snapshot.hasError}');
+              } else {
+                return GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                    itemCount: snapshot.docs.length,
+                    itemBuilder: (context, index) {
+                      final hasEndReached = snapshot.hasMore &&
+                          index + 1 == snapshot.docs.length &&
+                          !snapshot.isFetchingMore;
+
+                      if (hasEndReached) {
+                        snapshot.fetchMore();
+                      }
+                      final post = snapshot.docs[index].data();
+                      return buildPost(post);
+                    });
+              }
+            })
         // FirestoreListView<Post>(
         //   itemBuilder:
         //       (BuildContext context, QueryDocumentSnapshot<dynamic> doc) {
@@ -85,10 +101,8 @@ class _Pagination_Infinite_ScrollingState
                 semanticContainer: true,
                 color: Colors.white70,
                 child: Container(
-                  height:
-                  MediaQuery.of(context).size.width * 0.15,
-                  width:
-                  MediaQuery.of(context).size.width * 0.30,
+                  height: MediaQuery.of(context).size.width * 0.15,
+                  width: MediaQuery.of(context).size.width * 0.30,
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
@@ -98,12 +112,9 @@ class _Pagination_Infinite_ScrollingState
                             return LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black
-                              ],
-                            ).createShader(Rect.fromLTRB(
-                                0, 0, rect.width, rect.height));
+                              colors: [Colors.transparent, Colors.black],
+                            ).createShader(
+                                Rect.fromLTRB(0, 0, rect.width, rect.height));
                           },
                           blendMode: BlendMode.darken,
                           child: CachedNetworkImage(
@@ -112,8 +123,7 @@ class _Pagination_Infinite_ScrollingState
                             /*placeholder: (context, url) => Center(
                                               child: CircularProgressIndicator(),
                                             ),*/
-                            errorWidget:
-                                (context, url, error) =>
+                            errorWidget: (context, url, error) =>
                                 Icon(Icons.error),
                           ),
                         ),
@@ -150,7 +160,9 @@ class _Pagination_Infinite_ScrollingState
                   ),
                 ),
               ),
-              SizedBox(height: 12,),
+              SizedBox(
+                height: 12,
+              ),
               Padding(
                 padding: const EdgeInsets.all(2.0),
                 child: Row(
@@ -158,23 +170,24 @@ class _Pagination_Infinite_ScrollingState
                     Expanded(
                       flex: 1,
                       child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(post.item.toUpperCase(),
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: Colors.black54,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            fontFamily: 'Oswald',
-                          ),
-                        )
-                      ),
+                          alignment: Alignment.bottomLeft,
+                          child: Text(
+                            post.item.toUpperCase(),
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              fontFamily: 'Oswald',
+                            ),
+                          )),
                     ),
                     Expanded(
                       flex: 1,
                       child: Align(
                         alignment: Alignment.bottomLeft,
-                        child: Text(post.price.toUpperCase() + '.00 DZD',
+                        child: Text(
+                          post.price.toUpperCase() + '.00 DZD',
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             color: Colors.redAccent,
@@ -182,21 +195,24 @@ class _Pagination_Infinite_ScrollingState
                             fontSize: 12,
                             fontFamily: 'Oswald',
                           ),
-                        ),),
+                        ),
+                      ),
                     ),
                     Expanded(
                       flex: 1,
                       child: Align(
-                          alignment: Alignment.bottomRight,
-                          child: Text(post.likes.toUpperCase(),
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 12,
-                              fontFamily: 'Oswald',
-                            ),
-                          ),),
+                        alignment: Alignment.bottomRight,
+                        child: Text(
+                          post.likes.toUpperCase(),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 12,
+                            fontFamily: 'Oswald',
+                          ),
+                        ),
+                      ),
                     ),
                     //Icon(Icons.accessibility),
                   ],
