@@ -190,7 +190,7 @@ class _AddImageState extends State<AddImage> {
               onPressed: () {
                 setState(() {
                   uploading = true;
-                  datafire();
+                  home();
                 });
                 uploadFile().whenComplete(() => Navigator.of(context).pop());
               },
