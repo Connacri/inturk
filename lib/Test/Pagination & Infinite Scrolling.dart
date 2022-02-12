@@ -443,6 +443,7 @@ void uploadRandom() async {
     postCollection.add(post);
   }
 }
+
 class Slider extends StatelessWidget {
   const Slider({
     Key? key,

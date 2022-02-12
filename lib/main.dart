@@ -46,7 +46,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    Pagination_Infinite_Scrolling(),
+    //Pagination_Infinite_Scrolling(),
     //conbb(),
     home(),
     //ScriptPagination(),
@@ -107,10 +107,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             icon: Icon(Icons.threesixty),
             label: 'Messenger',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'Profile',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.school),
+          //   label: 'Profile',
+          // ),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.three_k_plus_rounded),
           //   label: 'Gradienz',

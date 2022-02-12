@@ -21,6 +21,8 @@ class _AddImageState extends State<AddImage> {
   TextEditingController _itemController = new TextEditingController();
   TextEditingController _priceController = new TextEditingController();
   TextEditingController _codeController = new TextEditingController();
+  TextEditingController _descriptionController = new TextEditingController();
+  TextEditingController _likesController = new TextEditingController();
   String _typeSelected = '';
 
   CollectionReference imgRef =
@@ -155,6 +157,34 @@ class _AddImageState extends State<AddImage> {
             ),
           ),
           SizedBox(height: 15),
+          TextFormField(
+            controller: _likesController,
+            decoration: InputDecoration(
+              hintText: 'Enter likes',
+              prefixIcon: Icon(
+                Icons.phone_iphone,
+                size: 30,
+              ),
+              fillColor: Colors.white,
+              filled: true,
+              contentPadding: EdgeInsets.all(15),
+            ),
+          ),
+          SizedBox(height: 15),
+          TextFormField(
+            controller: _descriptionController,
+            decoration: InputDecoration(
+              hintText: 'Enter Déscription',
+              prefixIcon: Icon(
+                Icons.phone_iphone,
+                size: 30,
+              ),
+              fillColor: Colors.white,
+              filled: true,
+              contentPadding: EdgeInsets.all(15),
+            ),
+          ),
+
 //CATEGORIES**********************************************************
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -232,6 +262,8 @@ class _AddImageState extends State<AddImage> {
     String item = _itemController.text;
     String price = _priceController.text;
     String code = _codeController.text;
+    String description = _descriptionController.text;
+    String likes = _likesController.text;
     var now = DateTime.now().millisecondsSinceEpoch;
     List<String> _imageFiles = []; //****************
 
@@ -288,6 +320,7 @@ class _AddImageState extends State<AddImage> {
     }
     //print(_imageFiles);
 
+
     imgRef.add({
       'themb': _imageFiles.first,
       'urls': _imageFiles,
@@ -295,7 +328,9 @@ class _AddImageState extends State<AddImage> {
       'code': code,
       'price': price, // + '.00 dzd ',
       'category': _typeSelected,
-      'time': Timestamp.now(), //now.toString(),
+      'createdAt': Timestamp.now(), //now.toString(),
+      'Description' : description,
+      'likes': likes
     });
   }
 
