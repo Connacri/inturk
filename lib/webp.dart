@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:paginate_firestore/bloc/pagination_listeners.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
 import 'package:shimmer/shimmer.dart';
-
 import 'home.dart';
 
 class conbb extends StatefulWidget {
@@ -214,7 +213,18 @@ class _conbbState extends State<conbb> {
                                 .map((DocumentSnapshot document) {
                               Map<String, dynamic> _data =
                               document.data()! as Map<String, dynamic>;
-                              return CardTop(data: _data);
+                              return InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (BuildContext context){
+                                        return CardTop(data: _data);
+                                      }
+                                  )
+                                );},
+                                  child: Hero(
+                                  tag: 'detail',
+                                      child: CardTop(data: _data))
+                              );
                             }).toList(),
                           );
                         },
@@ -840,348 +850,353 @@ class _conbbState extends State<conbb> {
               ? const Text('Error in data')
               : Padding(
                   padding: const EdgeInsets.fromLTRB(6, 4, 4, 4),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    elevation: 5,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child:  Container(
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: Stack(
-                              fit: StackFit.expand,
-                              children: [
-                                ShaderMask(
-                                  shaderCallback: (rect) {
-                                    return const LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [Colors.transparent, Colors.black],
-                                    ).createShader(
-                                        Rect.fromLTRB(0, 0, rect.width, rect.height));
-                                  },
-                                  blendMode: BlendMode.darken,
-                                  child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    imageUrl: _data['themb'],
-                                    /*placeholder: (context, url) => Center(
-                                              child: CircularProgressIndicator(),
-                                            ),*/
-                                    errorWidget: (context, url, error) => Icon(Icons.error),
-                                  ),
-                                ), // image
-                                Container(
-                                    padding: EdgeInsets.fromLTRB(0, 05, 05, 0),
-                                    //alignment: Alignment.topLeft,
-                                    child: _data['category'] == 'Hotel'
-                                        ? Row(
-                                      children: [
-                                        Flexible(
-                                          flex: 4,
-                                          fit: FlexFit.loose,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              ' ' +
-                                                  _data['category'].toUpperCase() +
-                                                  ' ',
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                backgroundColor: Colors.blue,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 12,
-                                                fontFamily: 'Oswald',
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: CircleAvatar(
-                                            radius: 10,
-                                            backgroundColor: Colors.blue,
-                                            //radius: 30,
-                                            child: Container(
-                                              child: Icon(
-                                                Icons.hotel,
-                                                color: Colors.white,
-                                                size: 12,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ) // hotel
-                                        : _data['category'] == 'Agence'
-                                        ? Row(
-                                      children: [
-                                        Flexible(
-                                          flex: 4,
-                                          fit: FlexFit.loose,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              ' ' +
-                                                  _data['category'].toUpperCase() +
-                                                  ' ',
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                backgroundColor: Colors.red,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 12,
-                                                fontFamily: 'Oswald',
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: CircleAvatar(
-                                            radius: 10,
-                                            backgroundColor: Colors.red,
-                                            //radius: 30,
-                                            child: Container(
-                                              //color: Colors.red,
-                                              child: Icon(
-                                                Icons.account_balance,
-                                                color: Colors.white,
-                                                size: 12,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ) // agence
-                                        : _data['category'] == 'Residence'
-                                        ? Row(
-                                      children: [
-                                        Flexible(
-                                          flex: 4,
-                                          fit: FlexFit.loose,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              ' ' +
-                                                  _data['category']
-                                                      .toUpperCase() +
-                                                  ' ',
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                backgroundColor: Colors.green,
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.normal,
-                                                fontSize: 12,
-                                                fontFamily: 'Oswald',
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: CircleAvatar(
-                                            radius: 10,
-
-                                            backgroundColor: Colors.green,
-                                            //radius: 30,
-                                            child: Container(
-                                              //color: Colors.red,
-                                              child: Icon(
-                                                Icons.apartment,
-                                                color: Colors.white,
-                                                size: 12,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ) // residence
-                                        : _data['category'] == 'Autres'
-                                        ? Row(
-                                      children: [
-                                        Flexible(
-                                          flex: 4,
-                                          fit: FlexFit.loose,
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text(
-                                              ' ' +
-                                                  _data['category']
-                                                      .toUpperCase() +
-                                                  ' ',
-                                              overflow:
-                                              TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                backgroundColor:
-                                                Colors.deepPurple,
-                                                color: Colors.white,
-                                                fontWeight:
-                                                FontWeight.normal,
-                                                fontSize: 12,
-                                                fontFamily: 'Oswald',
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Align(
-                                          alignment: Alignment.topRight,
-                                          child: CircleAvatar(
-                                            radius: 10,
-
-                                            backgroundColor:
-                                            Colors.deepPurple,
-                                            //radius: 30,
-                                            child: Container(
-                                              //color: Colors.red,
-                                              child: Icon(
-                                                Icons.category,
-                                                color: Colors.white,
-                                                size: 12,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ) // autres
-                                        : Row(
-                                      children: [
-                                        // Expanded(
-                                        //   flex: 3,
-                                        //   child: Text(
-                                        //     _data['category'].toUpperCase(),
-                                        //     overflow: TextOverflow.ellipsis,
-                                        //     style: const TextStyle(
-                                        //       backgroundColor: Colors.black,
-                                        //       color: Colors.amber,
-                                        //       fontWeight: FontWeight.normal,
-                                        //       fontSize: 15,
-                                        //       fontFamily: 'Oswald',
-                                        //     ),
-                                        //   ),
-                                        // ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Align(
-                                            alignment: Alignment.topRight,
-                                            child: CircleAvatar(
-                                              radius: 10,
-                                              backgroundColor:
-                                              Colors.black54,
-                                              //radius: 30,
-                                              child: Container(
-                                                //color: Colors.red,
-                                                child: Icon(
-                                                  Icons.attach_money,
-                                                  color: Colors.amber,
-                                                  size: 14,
+                  child: Hero(
+                      tag: 'detail',
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        elevation: 5,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child:  Container(
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    ShaderMask(
+                                      shaderCallback: (rect) {
+                                        return const LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [Colors.transparent, Colors.black],
+                                        ).createShader(
+                                            Rect.fromLTRB(0, 0, rect.width, rect.height));
+                                      },
+                                      blendMode: BlendMode.darken,
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: _data['themb'],
+                                        /*placeholder: (context, url) => Center(
+                                                  child: CircularProgressIndicator(),
+                                                ),*/
+                                        errorWidget: (context, url, error) => Icon(Icons.error),
+                                      ),
+                                    ), // image
+                                    Container(
+                                        padding: EdgeInsets.fromLTRB(0, 05, 05, 0),
+                                        //alignment: Alignment.topLeft,
+                                        child: _data['category'] == 'Hotel'
+                                            ? Row(
+                                          children: [
+                                            Flexible(
+                                              flex: 4,
+                                              fit: FlexFit.loose,
+                                              child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  ' ' +
+                                                      _data['category'].toUpperCase() +
+                                                      ' ',
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    backgroundColor: Colors.blue,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.normal,
+                                                    fontSize: 12,
+                                                    fontFamily: 'Oswald',
+                                                  ),
                                                 ),
                                               ),
                                             ),
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: CircleAvatar(
+                                                radius: 10,
+                                                backgroundColor: Colors.blue,
+                                                //radius: 30,
+                                                child: Container(
+                                                  child: Icon(
+                                                    Icons.hotel,
+                                                    color: Colors.white,
+                                                    size: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ) // hotel
+                                            : _data['category'] == 'Agence'
+                                            ? Row(
+                                          children: [
+                                            Flexible(
+                                              flex: 4,
+                                              fit: FlexFit.loose,
+                                              child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  ' ' +
+                                                      _data['category'].toUpperCase() +
+                                                      ' ',
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    backgroundColor: Colors.red,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.normal,
+                                                    fontSize: 12,
+                                                    fontFamily: 'Oswald',
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: CircleAvatar(
+                                                radius: 10,
+                                                backgroundColor: Colors.red,
+                                                //radius: 30,
+                                                child: Container(
+                                                  //color: Colors.red,
+                                                  child: Icon(
+                                                    Icons.account_balance,
+                                                    color: Colors.white,
+                                                    size: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ) // agence
+                                            : _data['category'] == 'Residence'
+                                            ? Row(
+                                          children: [
+                                            Flexible(
+                                              flex: 4,
+                                              fit: FlexFit.loose,
+                                              child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  ' ' +
+                                                      _data['category']
+                                                          .toUpperCase() +
+                                                      ' ',
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    backgroundColor: Colors.green,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.normal,
+                                                    fontSize: 12,
+                                                    fontFamily: 'Oswald',
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: CircleAvatar(
+                                                radius: 10,
+
+                                                backgroundColor: Colors.green,
+                                                //radius: 30,
+                                                child: Container(
+                                                  //color: Colors.red,
+                                                  child: Icon(
+                                                    Icons.apartment,
+                                                    color: Colors.white,
+                                                    size: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ) // residence
+                                            : _data['category'] == 'Autres'
+                                            ? Row(
+                                          children: [
+                                            Flexible(
+                                              flex: 4,
+                                              fit: FlexFit.loose,
+                                              child: Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  ' ' +
+                                                      _data['category']
+                                                          .toUpperCase() +
+                                                      ' ',
+                                                  overflow:
+                                                  TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    backgroundColor:
+                                                    Colors.deepPurple,
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                    FontWeight.normal,
+                                                    fontSize: 12,
+                                                    fontFamily: 'Oswald',
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.topRight,
+                                              child: CircleAvatar(
+                                                radius: 10,
+
+                                                backgroundColor:
+                                                Colors.deepPurple,
+                                                //radius: 30,
+                                                child: Container(
+                                                  //color: Colors.red,
+                                                  child: Icon(
+                                                    Icons.category,
+                                                    color: Colors.white,
+                                                    size: 12,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ) // autres
+                                            : Row(
+                                          children: [
+                                            // Expanded(
+                                            //   flex: 3,
+                                            //   child: Text(
+                                            //     _data['category'].toUpperCase(),
+                                            //     overflow: TextOverflow.ellipsis,
+                                            //     style: const TextStyle(
+                                            //       backgroundColor: Colors.black,
+                                            //       color: Colors.amber,
+                                            //       fontWeight: FontWeight.normal,
+                                            //       fontSize: 15,
+                                            //       fontFamily: 'Oswald',
+                                            //     ),
+                                            //   ),
+                                            // ),
+                                            Expanded(
+                                              flex: 1,
+                                              child: Align(
+                                                alignment: Alignment.topRight,
+                                                child: CircleAvatar(
+                                                  radius: 10,
+                                                  backgroundColor:
+                                                  Colors.black54,
+                                                  //radius: 30,
+                                                  child: Container(
+                                                    //color: Colors.red,
+                                                    child: Icon(
+                                                      Icons.attach_money,
+                                                      color: Colors.amber,
+                                                      size: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ) // sponsors
+                                    ), // category
+                                    Container(
+                                      alignment: Alignment.bottomCenter,
+                                      child: ListTile(
+                                        dense: true,
+                                        // leading: Icon(
+                                        //       Icons.attach_money,
+                                        //       color: Colors.amber,
+                                        //     ),
+
+                                        title: Text(
+                                          _data['item'].toUpperCase(),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 15,
+                                            fontFamily: 'Oswald',
                                           ),
                                         ),
-                                      ],
-                                    ) // sponsors
-                                ), // category
-                                Container(
-                                  alignment: Alignment.bottomCenter,
-                                  child: ListTile(
-                                    dense: true,
-                                    // leading: Icon(
-                                    //       Icons.attach_money,
-                                    //       color: Colors.amber,
+                                        subtitle: Text(
+                                          _data['code'].toUpperCase(),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: Colors.amber,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                            fontFamily: 'Oswald',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    // item & code
+                                    // Container(
+                                    //   padding: EdgeInsets.fromLTRB(4, 12, 0, 0),
+                                    //   alignment: Alignment.bottomLeft,
+                                    //   child: Text(
+                                    //     _data['Description'].toUpperCase(),
+                                    //     overflow: TextOverflow.ellipsis,
+                                    //     style: const TextStyle(
+                                    //       color: Colors.blue,
+                                    //       fontWeight: FontWeight.normal,
+                                    //       fontSize: 12,
+                                    //       fontFamily: 'Oswald',
                                     //     ),
-
-                                    title: Text(
-                                      _data['item'].toUpperCase(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 15,
-                                        fontFamily: 'Oswald',
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      _data['code'].toUpperCase(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: Colors.amber,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                        fontFamily: 'Oswald',
-                                      ),
-                                    ),
-                                  ),
+                                    //   ),
+                                    // ), // description
+                                  ],
                                 ),
-                                // item & code
-                                // Container(
-                                //   padding: EdgeInsets.fromLTRB(4, 12, 0, 0),
-                                //   alignment: Alignment.bottomLeft,
-                                //   child: Text(
-                                //     _data['Description'].toUpperCase(),
-                                //     overflow: TextOverflow.ellipsis,
-                                //     style: const TextStyle(
-                                //       color: Colors.blue,
-                                //       fontWeight: FontWeight.normal,
-                                //       fontSize: 12,
-                                //       fontFamily: 'Oswald',
-                                //     ),
-                                //   ),
-                                // ), // description
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      _data['price'].toUpperCase() + '.00 DZD',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        fontFamily: 'Oswald',
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text(
+                                          _data['price'].toUpperCase() + '.00 DZD',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 14,
+                                            fontFamily: 'Oswald',
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ), // price
-                                Expanded(
-                                  flex: 1,
-                                  child: Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Text(
-                                      _data['likes'].toUpperCase(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 12,
-                                        fontFamily: 'Oswald',
+                                    ), // price
+                                    Expanded(
+                                      flex: 1,
+                                      child: Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Text(
+                                          _data['likes'].toUpperCase(),
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 12,
+                                            fontFamily: 'Oswald',
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ), // likes
-                                const Icon(
-                                  Icons.favorite,
-                                  color: Colors.blue,
-                                  size: 14.0,
-                                ), // icon hearth
-                              ],
-                            ),
+                                    ), // likes
+                                    const Icon(
+                                      Icons.favorite,
+                                      color: Colors.blue,
+                                      size: 14.0,
+                                    ), // icon hearth
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+
+
                 );
         },
       ),
