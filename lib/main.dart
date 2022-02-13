@@ -5,6 +5,7 @@ import 'Test/Pagination & Infinite Scrolling.dart';
 import 'Test/carousel test.dart';
 import 'Test/firestoreScriptPagination.dart';
 import 'Test/pagination_view.dart';
+import 'Test/shimmer.dart';
 import 'add_dif/card_test.dart';
 import 'home.dart';
 import 'Fav.dart';
@@ -48,7 +49,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const List<Widget> _widgetOptions = <Widget>[
     //Pagination_Infinite_Scrolling(),
     //conbb(),
-    home(),
+    conbb(),
     //ScriptPagination(),
     //RamzyPagination(),
     //Carrouselllll(),
@@ -56,7 +57,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     //RealTimeDataDisplay(),
     //CarouselDemo(),
     //Profile(),
-    conbb(),
+    home(),
+    //Shimme(),
   ];
 
   void _onItemTapped(int index) {
@@ -110,7 +112,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.school),
           //   label: 'Profile',
-          // ),
+          //),
           // BottomNavigationBarItem(
           //   icon: Icon(Icons.three_k_plus_rounded),
           //   label: 'Gradienz',

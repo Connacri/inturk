@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:paginate_firestore/paginate_firestore.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'Fav.dart';
 import 'main.dart';
@@ -32,6 +33,8 @@ class _imageURLs extends StatefulWidget {
   @override
   _imageURLsState createState() => _imageURLsState();
 }
+
+bool _enabled = true;
 
 class _imageURLsState extends State<_imageURLs> {
   Future<QuerySnapshot> _TopAgenceFuture = FirebaseFirestore.instance
@@ -221,82 +224,82 @@ class _imageURLsState extends State<_imageURLs> {
       body: RefreshIndicator(
         onRefresh: () => _refreshAll(context),
         child: SingleChildScrollView(
-          child: Column(
+          child: ListView(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
             children: [
-              Container(
-                // height: 250,
-                color: Colors.white,
-                child: Column(
-                  children: [
-                    if (_dataLength != 0)
-                      FutureBuilder(
-                        future: _TopHotelFuture,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<QuerySnapshot> snapshot) {
-                          if (snapshot.hasError) {
-                            return Text('Something went wrong');
-                          }
+              //Container(
+              // height: 250,
+              // color: Colors.white,
+              // child: Column(
+              //   children: [
+              // if (_dataLength != 0)
+              FutureBuilder(
+                future: _TopHotelFuture,
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text('Something went wrong');
+                  }
 
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Text("Loading");
-                          }
-                          return snapshot.data == null
-                              ? Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.only(top: 0),
-                                  child: CarouselSlider(
-                                      items: snapshot.data!.docs.map(
-                                        (DocumentSnapshot document) {
-                                          Map<String, dynamic> _data = document
-                                              .data()! as Map<String, dynamic>;
-                                          return SizedBox(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            child: ShaderMask(
-                                              shaderCallback: (rect) {
-                                                return LinearGradient(
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
-                                                  colors: [
-                                                    Colors.transparent,
-                                                    Colors.black
-                                                  ],
-                                                ).createShader(Rect.fromLTRB(
-                                                    0,
-                                                    0,
-                                                    rect.width,
-                                                    rect.height));
-                                              },
-                                              blendMode: BlendMode.darken,
-                                              child: CachedNetworkImage(
-                                                fit: BoxFit.cover,
-                                                imageUrl: _data['themb'],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ).toList(),
-                                      options: CarouselOptions(
-                                        viewportFraction: 1,
-                                        initialPage: 0,
-                                        autoPlay: true,
-                                        height: 170,
-                                        /*   onPageChanged: (int i,
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Shimmer.fromColors(
+                      baseColor: Colors.grey.shade300,
+                      highlightColor: Colors.grey.shade100,
+                      period: Duration(microseconds: 3000),
+                      enabled: _enabled,
+                      child: Container(height: 170, child: Text("Loading")),
+                    );
+                  }
+                  return snapshot.data == null
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(top: 0),
+                          child: CarouselSlider(
+                              items: snapshot.data!.docs.map(
+                                (DocumentSnapshot document) {
+                                  Map<String, dynamic> _data =
+                                      document.data()! as Map<String, dynamic>;
+                                  return SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: ShaderMask(
+                                      shaderCallback: (rect) {
+                                        return LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black
+                                          ],
+                                        ).createShader(Rect.fromLTRB(
+                                            0, 0, rect.width, rect.height));
+                                      },
+                                      blendMode: BlendMode.darken,
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: _data['themb'],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ).toList(),
+                              options: CarouselOptions(
+                                viewportFraction: 1,
+                                initialPage: 0,
+                                autoPlay: true,
+                                height: 170,
+                                /*   onPageChanged: (int i,
                                         carouselPageChangedReason) {
                                       setState(() {
                                         _index = i;
                                       });
                                     }*/
-                                      )),
-                                );
-                        },
-                      ),
-                  ],
-                ),
+                              )),
+                        );
+                },
+                //),
               ), //Firestore Slider
               Container(
                 child: ElevatedButton(
@@ -376,7 +379,7 @@ class _imageURLsState extends State<_imageURLs> {
 
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return Text("Loading");
+                            return CardTopShimmer();
                           }
 
                           return ListView(
@@ -463,7 +466,7 @@ class _imageURLsState extends State<_imageURLs> {
 
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return Text("Loading");
+                            return CardTopShimmer(); //Text("Loading");
                           }
 
                           return ListView(
@@ -636,7 +639,7 @@ class _imageURLsState extends State<_imageURLs> {
 
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            return Text("Loading");
+                            return CardTopShimmer(); //Text("Loading");
                           }
 
                           return ListView(
@@ -851,7 +854,11 @@ class _imageURLsState extends State<_imageURLs> {
 
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return Text("Loading");
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                            enabled: _enabled,
+                            child: Container());//Text("Loading");
                         }
 
                         return ListView(
@@ -863,114 +870,115 @@ class _imageURLsState extends State<_imageURLs> {
                             Map<String, dynamic> _data =
                                 document.data()! as Map<String, dynamic>;
                             return Card(
-                              clipBehavior: Clip.antiAlias,
-                              elevation: 5,
-                              child: Column(
-                                children: [
-                                  ListTile(
-                                    leading: CircleAvatar(
-                                      backgroundImage:
-                                          NetworkImage(_data['themb']),
-                                    ),
-                                    /*Icon(Icons.add_a_photo_rounded),*/
-                                    title: Text(
-                                      _data['item'].toUpperCase(),
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Colors.blue,
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 15,
-                                        fontFamily: 'Oswald',
+                                clipBehavior: Clip.antiAlias,
+                                elevation: 5,
+                                child: Column(
+                                  children: [
+                                    ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundImage:
+                                            NetworkImage(_data['themb']),
                                       ),
-                                    ),
-                                    subtitle: Text(
-                                      _data['price'] + '.00 DZD',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Colors.redAccent,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15,
-                                        fontFamily: 'Oswald',
-                                      ),
-                                    ),
-                                  ),
-                                  ShaderMask(
-                                    shaderCallback: (rect) {
-                                      return LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: [
-                                          Colors.transparent,
-                                          Colors.black
-                                        ],
-                                      ).createShader(Rect.fromLTRB(
-                                          0, 0, rect.width, rect.height));
-                                    },
-                                    blendMode: BlendMode.darken,
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      imageUrl: _data['themb'],
-                                      /*placeholder: (context, url) => Center(
-                                  child: CircularProgressIndicator(),
-                                ),*/
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Text(
-                                      'Greyhound divisively hello coldly wonderfully marginally far upon excluding.'
-                                          .toUpperCase(),
-                                      //overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.6),
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 15,
-                                        fontFamily: 'Oswald',
-                                      ),
-                                    ),
-                                  ),
-                                  ButtonBar(
-                                    alignment: MainAxisAlignment.start,
-                                    children: [
-                                      FlatButton(
-                                        textColor: const Color(0xFF005DFF),
-                                        onPressed: () {
-                                          // Perform some action
-                                        },
-                                        child: Text(
-                                          'ACTION 1'.toUpperCase(),
-                                          //overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            //color: Colors.black.withOpacity(0.6),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 15,
-                                            fontFamily: 'Oswald',
-                                          ),
+                                      /*Icon(Icons.add_a_photo_rounded),*/
+                                      title: Text(
+                                        _data['item'].toUpperCase(),
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 15,
+                                          fontFamily: 'Oswald',
                                         ),
                                       ),
-                                      FlatButton(
-                                        textColor: const Color(0xFFFF0000),
-                                        onPressed: () {
-                                          // Perform some action
-                                        },
-                                        child: Text(
-                                          'ACTION 2'.toUpperCase(),
-                                          //overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            //color: Colors.black.withOpacity(0.6),
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 15,
-                                            fontFamily: 'Oswald',
-                                          ),
+                                      subtitle: Text(
+                                        _data['price'] + '.00 DZD',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.redAccent,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                          fontFamily: 'Oswald',
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                  /* Image.network('https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=939&q=80'),*/
-                                ],
-                              ),
+                                    ),
+                                    ShaderMask(
+                                      shaderCallback: (rect) {
+                                        return LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.black
+                                          ],
+                                        ).createShader(Rect.fromLTRB(
+                                            0, 0, rect.width, rect.height));
+                                      },
+                                      blendMode: BlendMode.darken,
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        imageUrl: _data['themb'],
+                                        /*placeholder: (context, url) => Center(
+                                    child: CircularProgressIndicator(),
+                                  ),*/
+                                        errorWidget: (context, url, error) =>
+                                            Icon(Icons.error),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Text(
+                                        'Greyhound divisively hello coldly wonderfully marginally far upon excluding.'
+                                            .toUpperCase(),
+                                        //overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.black.withOpacity(0.6),
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 15,
+                                          fontFamily: 'Oswald',
+                                        ),
+                                      ),
+                                    ),
+                                    ButtonBar(
+                                      alignment: MainAxisAlignment.start,
+                                      children: [
+                                        FlatButton(
+                                          textColor: const Color(0xFF005DFF),
+                                          onPressed: () {
+                                            // Perform some action
+                                          },
+                                          child: Text(
+                                            'ACTION 1'.toUpperCase(),
+                                            //overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              //color: Colors.black.withOpacity(0.6),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 15,
+                                              fontFamily: 'Oswald',
+                                            ),
+                                          ),
+                                        ),
+                                        FlatButton(
+                                          textColor: const Color(0xFFFF0000),
+                                          onPressed: () {
+                                            // Perform some action
+                                          },
+                                          child: Text(
+                                            'ACTION 2'.toUpperCase(),
+                                            //overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              //color: Colors.black.withOpacity(0.6),
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 15,
+                                              fontFamily: 'Oswald',
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    /* Image.network('https://images.unsplash.com/photo-1481349518771-20055b2a7b24?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=939&q=80'),*/
+                                  ],
+                                ),
+
                             );
                           }).toList(),
                         );
@@ -979,8 +987,7 @@ class _imageURLsState extends State<_imageURLs> {
                   ],
                 ),
               ), // ListView Horizontal Filtered Top Product
-              SizedBox(
-                child: FutureBuilder<QuerySnapshot>(
+              FutureBuilder<QuerySnapshot>(
                     future: _GridListTotal,
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -1099,7 +1106,7 @@ class _imageURLsState extends State<_imageURLs> {
                         return Text('State: ${snapshot.connectionState}');
                       }
                     }),
-              ),
+
             ],
           ),
         ),
@@ -1208,14 +1215,16 @@ class CardR extends StatelessWidget {
                                   fit: FlexFit.loose,
                                   child: Align(
                                     alignment: Alignment.topLeft,
-                                    child: Text( ' ' +
-                                      _data['category'].toUpperCase() + ' ',
+                                    child: Text(
+                                      ' ' +
+                                          _data['category'].toUpperCase() +
+                                          ' ',
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         backgroundColor: Colors.blue,
                                         color: Colors.white,
                                         fontWeight: FontWeight.normal,
-                                        fontSize: 15,
+                                        fontSize: 12,
                                         fontFamily: 'Oswald',
                                       ),
                                     ),
@@ -1228,10 +1237,11 @@ class CardR extends StatelessWidget {
                                     backgroundColor: Colors.blue,
                                     //radius: 30,
                                     child: Container(
-
-                                      child: Icon(Icons.hotel,
-                                          color: Colors.white
-                                      , size: 14,),
+                                      child: Icon(
+                                        Icons.hotel,
+                                        color: Colors.white,
+                                        size: 12,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -1245,14 +1255,16 @@ class CardR extends StatelessWidget {
                                       fit: FlexFit.loose,
                                       child: Align(
                                         alignment: Alignment.topLeft,
-                                        child: Text( ' '+
-                                          _data['category'].toUpperCase()+ ' ',
+                                        child: Text(
+                                          ' ' +
+                                              _data['category'].toUpperCase() +
+                                              ' ',
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(
                                             backgroundColor: Colors.red,
                                             color: Colors.white,
                                             fontWeight: FontWeight.normal,
-                                            fontSize: 15,
+                                            fontSize: 12,
                                             fontFamily: 'Oswald',
                                           ),
                                         ),
@@ -1269,7 +1281,7 @@ class CardR extends StatelessWidget {
                                           child: Icon(
                                             Icons.account_balance,
                                             color: Colors.white,
-                                            size: 14,
+                                            size: 12,
                                           ),
                                         ),
                                       ),
@@ -1284,14 +1296,17 @@ class CardR extends StatelessWidget {
                                           fit: FlexFit.loose,
                                           child: Align(
                                             alignment: Alignment.topLeft,
-                                            child: Text( ' '+
-                                              _data['category'].toUpperCase()+ ' ',
+                                            child: Text(
+                                              ' ' +
+                                                  _data['category']
+                                                      .toUpperCase() +
+                                                  ' ',
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 backgroundColor: Colors.green,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.normal,
-                                                fontSize: 15,
+                                                fontSize: 12,
                                                 fontFamily: 'Oswald',
                                               ),
                                             ),
@@ -1309,7 +1324,7 @@ class CardR extends StatelessWidget {
                                               child: Icon(
                                                 Icons.apartment,
                                                 color: Colors.white,
-                                                size: 14,
+                                                size: 12,
                                               ),
                                             ),
                                           ),
@@ -1324,9 +1339,11 @@ class CardR extends StatelessWidget {
                                               fit: FlexFit.loose,
                                               child: Align(
                                                 alignment: Alignment.topLeft,
-                                                child: Text( ' '+
-                                                  _data['category']
-                                                      .toUpperCase()+ ' ',
+                                                child: Text(
+                                                  ' ' +
+                                                      _data['category']
+                                                          .toUpperCase() +
+                                                      ' ',
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: const TextStyle(
@@ -1335,7 +1352,7 @@ class CardR extends StatelessWidget {
                                                     color: Colors.white,
                                                     fontWeight:
                                                         FontWeight.normal,
-                                                    fontSize: 15,
+                                                    fontSize: 12,
                                                     fontFamily: 'Oswald',
                                                   ),
                                                 ),
@@ -1354,7 +1371,7 @@ class CardR extends StatelessWidget {
                                                   child: Icon(
                                                     Icons.category,
                                                     color: Colors.white,
-                                                    size: 14,
+                                                    size: 12,
                                                   ),
                                                 ),
                                               ),
@@ -1702,6 +1719,114 @@ class CardTop extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CardTopShimmer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: [
+        Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          enabled: _enabled,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6),
+            ),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            elevation: 2,
+            semanticContainer: true,
+            //color: Colors.white70,
+            child: Container(
+              height: MediaQuery.of(context).size.width * 0.15,
+              width: MediaQuery.of(context).size.width * 0.30,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Container(),
+                        Container(),
+                        Container(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          enabled: _enabled,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6),
+            ),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            elevation: 2,
+            semanticContainer: true,
+            //color: Colors.white70,
+            child: Container(
+              height: MediaQuery.of(context).size.width * 0.15,
+              width: MediaQuery.of(context).size.width * 0.30,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Container(),
+                        Container(),
+                        Container(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Shimmer.fromColors(
+          baseColor: Colors.grey.shade300,
+          highlightColor: Colors.grey.shade100,
+          //period: Duration(milliseconds: 3000),
+          enabled: _enabled,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6),
+            ),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            elevation: 2,
+            semanticContainer: true,
+            //color: Colors.white70,
+            child: Container(
+              height: MediaQuery.of(context).size.width * 0.15,
+              width: MediaQuery.of(context).size.width * 0.30,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Container(),
+                        Container(),
+                        Container(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
